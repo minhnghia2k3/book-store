@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  db:
+    container_name: 'book-store-db'
+    image: postgres:17-alpine3.20
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: changemeinprod!
