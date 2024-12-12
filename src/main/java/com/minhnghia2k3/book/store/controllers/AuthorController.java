@@ -30,7 +30,7 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
         AuthorEntity author = mapper.fromMapper(authorDto);
 
-        authorService.createAuthor(author);
+        authorService.save(author);
 
         AuthorDto result = mapper.toMapper(author);
 
@@ -63,4 +63,28 @@ public class AuthorController {
         return ResponseEntity.ok(result);
     }
 
+    @PutMapping("/authors/{id}")
+    public ResponseEntity<AuthorDto> updateAuthor(@PathVariable Long id, @RequestBody AuthorDto authorDto) {
+        AuthorEntity author = mapper.fromMapper(authorDto);
+
+        if (!authorService.isExists(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        author.setId(id);
+        AuthorEntity updatedAuthor = authorService.save(author);
+
+        return ResponseEntity.ok(mapper.toMapper(updatedAuthor));
+    }
+
+    @DeleteMapping("/authors/{id}")
+    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
+        if(!authorService.isExists(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        authorService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

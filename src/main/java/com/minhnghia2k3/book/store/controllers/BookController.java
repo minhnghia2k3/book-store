@@ -4,6 +4,11 @@ import com.minhnghia2k3.book.store.domain.dtos.BookDto;
 import com.minhnghia2k3.book.store.domain.entities.BookEntity;
 import com.minhnghia2k3.book.store.mappers.Mapper;
 import com.minhnghia2k3.book.store.services.BookService;
+import org.aspectj.weaver.ast.Var;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,19 +32,26 @@ public class BookController {
     @PostMapping("/books")
     public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto) {
         BookEntity book = mapper.fromMapper(bookDto);
-        bookService.createBook(book);
-        BookDto result = mapper.toMapper(book);
+        BookEntity savedBook = bookService.save(book);
+        BookDto result = mapper.toMapper(savedBook);
         URI uri = URI.create("/api/v1/books/" + result.getIsbn());
         return ResponseEntity.created(uri).body(result);
     }
 
     @GetMapping("/books")
-    public ResponseEntity<List<BookDto>> getBooks() {
-        List<BookEntity> books = bookService.findAll();
+    public ResponseEntity<Page<BookDto>> getBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "isbn") String sortBy,
+            @RequestParam(defaultValue = "true") boolean ascending
+    ) {
+        Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
-        List<BookDto> result = books.stream()
-                .map(mapper::toMapper)
-                .toList();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<BookEntity> books = bookService.findAll(pageable);
+
+        Page<BookDto> result = books.map(mapper::toMapper);
 
         return ResponseEntity.ok(result);
     }
@@ -53,6 +65,30 @@ public class BookController {
         }
 
         return ResponseEntity.ok(mapper.toMapper(book.get()));
+    }
+
+    @PutMapping("/books/{isbn}")
+    public ResponseEntity<BookDto> update(@PathVariable String isbn, @RequestBody BookDto bookDto) {
+        BookEntity book = mapper.fromMapper(bookDto);
+
+        if (!bookService.isExists(isbn)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        BookEntity updatedBook = bookService.save(book);
+
+        return ResponseEntity.ok(mapper.toMapper(updatedBook));
+    }
+
+    @DeleteMapping("/books/{isbn}")
+    public ResponseEntity<Void> delete(@PathVariable String isbn) {
+        if (!bookService.isExists(isbn)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        bookService.deleteById(isbn);
+
+        return ResponseEntity.noContent().build();
     }
 }
 

@@ -1,7 +1,5 @@
 package com.minhnghia2k3.book.store.domain.entities;
 
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity

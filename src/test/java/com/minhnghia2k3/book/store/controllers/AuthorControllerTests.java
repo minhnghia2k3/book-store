@@ -2,6 +2,7 @@ package com.minhnghia2k3.book.store.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minhnghia2k3.book.store.TestDataUtil;
+import com.minhnghia2k3.book.store.domain.dtos.AuthorDto;
 import com.minhnghia2k3.book.store.domain.entities.AuthorEntity;
 import com.minhnghia2k3.book.store.services.AuthorService;
 import org.junit.jupiter.api.Test;
@@ -56,9 +57,9 @@ public class AuthorControllerTests {
         AuthorEntity authorB = new AuthorEntity(null, "John Doe", 20);
         AuthorEntity authorC = new AuthorEntity(null, "Somebody i used to know", 15);
 
-        authorService.createAuthor(authorA);
-        authorService.createAuthor(authorB);
-        authorService.createAuthor(authorC);
+        authorService.save(authorA);
+        authorService.save(authorB);
+        authorService.save(authorC);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/v1/authors")
@@ -72,7 +73,7 @@ public class AuthorControllerTests {
     @Test
     public void should_return_an_author_and_200_ok() throws Exception {
         AuthorEntity author = TestDataUtil.createTestAuthor();
-        authorService.createAuthor(author);
+        authorService.save(author);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/v1/authors/1")
@@ -93,4 +94,70 @@ public class AuthorControllerTests {
                 MockMvcResultMatchers.status().isNotFound()
         );
     }
+
+    @Test
+    public void should_update_an_existing_author_and_return_200_ok() throws Exception {
+        AuthorEntity author = TestDataUtil.createTestAuthor();
+        authorService.save(author);
+
+        AuthorDto authorDto = new AuthorDto(99L, "updated-name", 30);
+
+        String authorJson = mapper.writeValueAsString(authorDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/api/v1/authors/" + author.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(author.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value(authorDto.getName())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.age").value(authorDto.getAge())
+        );
+    }
+
+    @Test
+    public void should_not_update_an_non_existing_author() throws Exception {
+        AuthorDto authorDto = new AuthorDto(99L, "updated-name", 30);
+        String authorJson = mapper.writeValueAsString(authorDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/api/v1/authors/99")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    public void should_delete_an_existing_author_return_204() throws Exception {
+        AuthorEntity author = TestDataUtil.createTestAuthor();
+        authorService.save(author);
+
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/authors/" + author.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNoContent()
+        );
+    }
+
+    @Test
+    public void should_not_delete_an_non_existing_author_return_404() throws Exception {
+        AuthorEntity author = TestDataUtil.createTestAuthor();
+        authorService.save(author);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/authors/99")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
 }

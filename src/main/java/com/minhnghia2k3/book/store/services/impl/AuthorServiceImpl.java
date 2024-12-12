@@ -5,7 +5,6 @@ import com.minhnghia2k3.book.store.repositories.AuthorRepository;
 import com.minhnghia2k3.book.store.services.AuthorService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,7 +19,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorEntity createAuthor(AuthorEntity author) {
+    public AuthorEntity save(AuthorEntity author) {
         return authorRepository.save(author);
     }
 
@@ -32,7 +31,17 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<AuthorEntity> findAll() {
-        return StreamSupport.stream(authorRepository.findAll().spliterator(), false)
+        return StreamSupport.stream(authorRepository.findAllOrderByIdDesc().spliterator(), false)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isExists(Long id) {
+        return authorRepository.existsById(id);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        authorRepository.deleteById(id);
     }
 }

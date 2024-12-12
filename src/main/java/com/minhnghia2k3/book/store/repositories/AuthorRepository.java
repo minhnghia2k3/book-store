@@ -11,4 +11,8 @@ public interface AuthorRepository extends CrudRepository<AuthorEntity, Long> {
 
     @Query("FROM AuthorEntity WHERE age >= :age")
     Iterable<AuthorEntity> findAgeGreaterOrEqualThan(int age);
+
+    @Query("FROM AuthorEntity ORDER BY id desc")
+    Iterable<AuthorEntity> findAllOrderByIdDesc();
+
 }
