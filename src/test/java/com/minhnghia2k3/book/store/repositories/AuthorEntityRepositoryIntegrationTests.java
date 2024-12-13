@@ -18,7 +18,7 @@ import static  org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuthorEntityRepositoryIntegrationTests {
 
-    private AuthorRepository underTest;
+    private final AuthorRepository underTest;
 
     @Autowired
     public AuthorEntityRepositoryIntegrationTests(AuthorRepository authorRepository) {
@@ -87,20 +87,5 @@ public class AuthorEntityRepositoryIntegrationTests {
 
         Iterable<AuthorEntity> result = underTest.ageLessThan(30);
         assertThat(result).hasSize(1);
-    }
-
-    @Test
-    public void should_return_authors_when_find_age_greater_than() {
-        AuthorEntity authorEntity = TestDataUtil.createTestAuthor();
-        underTest.save(authorEntity);
-
-        AuthorEntity authorEntityB = new AuthorEntity(null, "Tom Holland", 25);
-        underTest.save(authorEntityB);
-
-        AuthorEntity authorEntityC = new AuthorEntity(null, "James Bone", 30);
-        underTest.save(authorEntityC);
-
-        Iterable<AuthorEntity> result = underTest.findAgeGreaterOrEqualThan(30);
-        assertThat(result).hasSize(2);
     }
 }

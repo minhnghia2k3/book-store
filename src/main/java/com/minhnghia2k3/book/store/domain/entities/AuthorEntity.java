@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name="authors")
 public class AuthorEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "authors_id_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
