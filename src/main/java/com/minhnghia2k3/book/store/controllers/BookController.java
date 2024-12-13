@@ -2,6 +2,7 @@ package com.minhnghia2k3.book.store.controllers;
 
 import com.minhnghia2k3.book.store.domain.dtos.BookDto;
 import com.minhnghia2k3.book.store.domain.entities.BookEntity;
+import com.minhnghia2k3.book.store.exceptions.BookNotFound;
 import com.minhnghia2k3.book.store.mappers.Mapper;
 import com.minhnghia2k3.book.store.services.BookService;
 import org.aspectj.weaver.ast.Var;
@@ -61,7 +62,7 @@ public class BookController {
         Optional<BookEntity> book = bookService.findById(isbn);
 
         if (book.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new BookNotFound("not found book by isbn: " + isbn);
         }
 
         return ResponseEntity.ok(mapper.toMapper(book.get()));
@@ -72,7 +73,7 @@ public class BookController {
         BookEntity book = mapper.fromMapper(bookDto);
 
         if (!bookService.isExists(isbn)) {
-            return ResponseEntity.notFound().build();
+            throw new BookNotFound("not found book by isbn: " + isbn);
         }
 
         BookEntity updatedBook = bookService.save(book);
@@ -83,7 +84,7 @@ public class BookController {
     @DeleteMapping("/books/{isbn}")
     public ResponseEntity<Void> delete(@PathVariable String isbn) {
         if (!bookService.isExists(isbn)) {
-            return ResponseEntity.notFound().build();
+            throw new BookNotFound("not found book by isbn: " + isbn);
         }
 
         bookService.deleteById(isbn);

@@ -2,12 +2,10 @@ package com.minhnghia2k3.book.store.controllers;
 
 import com.minhnghia2k3.book.store.domain.dtos.AuthorDto;
 import com.minhnghia2k3.book.store.domain.entities.AuthorEntity;
+import com.minhnghia2k3.book.store.exceptions.AuthorNotFound;
 import com.minhnghia2k3.book.store.mappers.Mapper;
 import com.minhnghia2k3.book.store.services.AuthorService;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -55,8 +53,8 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> findAuthorById(@PathVariable Long id) {
         Optional<AuthorEntity> author = authorService.findById(id);
 
-        if(author.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if (author.isEmpty()) {
+            throw new AuthorNotFound("not found user by id: " + id);
         }
 
         AuthorDto result = mapper.toMapper(author.get());
@@ -68,7 +66,7 @@ public class AuthorController {
         AuthorEntity author = mapper.fromMapper(authorDto);
 
         if (!authorService.isExists(id)) {
-            return ResponseEntity.notFound().build();
+            throw new AuthorNotFound("not found user by id: " + id);
         }
 
         author.setId(id);
@@ -79,8 +77,8 @@ public class AuthorController {
 
     @DeleteMapping("/authors/{id}")
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
-        if(!authorService.isExists(id)) {
-            return ResponseEntity.notFound().build();
+        if (!authorService.isExists(id)) {
+            throw new AuthorNotFound("not found user by id: " + id);
         }
 
         authorService.deleteById(id);
