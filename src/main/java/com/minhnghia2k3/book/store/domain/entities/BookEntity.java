@@ -2,9 +2,15 @@ package com.minhnghia2k3.book.store.domain.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Entity
 @Table(name = "books")
-public class BookEntity {
+public class BookEntity implements Serializable {
+    @Serial
+    private static final long serialVersionUID=1L;
+
     @Id
     private String isbn;
 

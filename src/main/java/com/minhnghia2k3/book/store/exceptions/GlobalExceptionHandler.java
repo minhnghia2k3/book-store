@@ -13,14 +13,20 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({AuthorNotFound.class, BookNotFound.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleAuthorNotFound(Exception e) {
+    public ErrorResponse handleNotFound(Exception e) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
+    }
+
+    @ExceptionHandler(AuthorDeletionException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleConflict(Exception e) {
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleUnexpectedError(Exception e) {
-        log.trace(e.toString());
+        e.printStackTrace();
         return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something wrongs! Try again later!");
     }
 }

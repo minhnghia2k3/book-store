@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minhnghia2k3.book.store.TestDataUtil;
 import com.minhnghia2k3.book.store.domain.dtos.AuthorDto;
 import com.minhnghia2k3.book.store.domain.entities.AuthorEntity;
+import com.minhnghia2k3.book.store.domain.entities.BookEntity;
 import com.minhnghia2k3.book.store.services.AuthorService;
+import com.minhnghia2k3.book.store.services.BookService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,13 +24,15 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 @AutoConfigureMockMvc
 public class AuthorControllerTests {
 
+    private final BookService bookService;
     private final MockMvc mockMvc;
     private final ObjectMapper mapper;
     private final AuthorService authorService;
 
     @Autowired
-    public AuthorControllerTests(MockMvc mockMvc, ObjectMapper mapper, AuthorService authorService) {
+    public AuthorControllerTests(MockMvc mockMvc, ObjectMapper mapper, BookService bookService, AuthorService authorService) {
         this.mockMvc = mockMvc;
+        this.bookService = bookService;
         this.authorService = authorService;
         this.mapper = new ObjectMapper();
     }
@@ -157,6 +161,21 @@ public class AuthorControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    public void should_prevent_delete_an_author_that_containing_books() throws Exception {
+        AuthorEntity author = TestDataUtil.createTestAuthor();
+        authorService.save(author);
+        BookEntity book = TestDataUtil.createTestBook(author);
+        bookService.save(book);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/authors/" + author.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isConflict()
         );
     }
 

@@ -2,9 +2,15 @@ package com.minhnghia2k3.book.store.domain.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Entity
-@Table(name="authors")
-public class AuthorEntity {
+@Table(name = "authors")
+public class AuthorEntity implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

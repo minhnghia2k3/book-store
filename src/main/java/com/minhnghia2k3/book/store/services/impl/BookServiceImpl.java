@@ -3,13 +3,14 @@ package com.minhnghia2k3.book.store.services.impl;
 import com.minhnghia2k3.book.store.domain.entities.BookEntity;
 import com.minhnghia2k3.book.store.repositories.BookRepository;
 import com.minhnghia2k3.book.store.services.BookService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -19,22 +20,19 @@ public class BookServiceImpl implements BookService {
         this.bookRepository = bookRepository;
     }
 
+    @CachePut(value = "books", key = "#book.isbn")
     @Override
     public BookEntity save(BookEntity book) {
         return bookRepository.save(book);
     }
 
-    @Override
-    public List<BookEntity> findAll() {
-        return StreamSupport.stream(bookRepository.findAll().spliterator(), false)
-                .toList();
-    }
 
     @Override
     public Page<BookEntity> findAll(Pageable pageable) {
         return bookRepository.findAll(pageable);
     }
 
+    @Cacheable(value = "books", key = "#isbn")
     @Override
     public Optional<BookEntity> findById(String isbn) {
         return bookRepository.findById(isbn);
@@ -45,6 +43,8 @@ public class BookServiceImpl implements BookService {
         return bookRepository.existsById(isbn);
     }
 
+
+    @CacheEvict(value = "books", key = "#isbn")
     @Override
     public void deleteById(String isbn) {
         bookRepository.deleteById(isbn);
