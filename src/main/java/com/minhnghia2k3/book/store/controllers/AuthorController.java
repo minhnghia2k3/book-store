@@ -5,6 +5,7 @@ import com.minhnghia2k3.book.store.domain.entities.AuthorEntity;
 import com.minhnghia2k3.book.store.exceptions.AuthorNotFound;
 import com.minhnghia2k3.book.store.mappers.Mapper;
 import com.minhnghia2k3.book.store.services.AuthorService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class AuthorController {
     }
 
     @PostMapping("/authors")
-    public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
+    public ResponseEntity<AuthorDto> createAuthor(@Valid @RequestBody AuthorDto authorDto) {
         AuthorEntity author = mapper.fromMapper(authorDto);
 
         authorService.save(author);
@@ -62,7 +63,7 @@ public class AuthorController {
     }
 
     @PutMapping("/authors/{id}")
-    public ResponseEntity<AuthorDto> updateAuthor(@PathVariable Long id, @RequestBody AuthorDto authorDto) {
+    public ResponseEntity<AuthorDto> updateAuthor(@PathVariable Long id, @Valid @RequestBody AuthorDto authorDto) {
         AuthorEntity author = mapper.fromMapper(authorDto);
 
         if (!authorService.isExists(id)) {

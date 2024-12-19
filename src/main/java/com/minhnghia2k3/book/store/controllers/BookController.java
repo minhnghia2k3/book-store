@@ -5,6 +5,7 @@ import com.minhnghia2k3.book.store.domain.entities.BookEntity;
 import com.minhnghia2k3.book.store.exceptions.BookNotFound;
 import com.minhnghia2k3.book.store.mappers.Mapper;
 import com.minhnghia2k3.book.store.services.BookService;
+import jakarta.validation.Valid;
 import org.aspectj.weaver.ast.Var;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +32,7 @@ public class BookController {
     }
 
     @PostMapping("/books")
-    public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto) {
+    public ResponseEntity<BookDto> createBook(@Valid @RequestBody BookDto bookDto) {
         BookEntity book = mapper.fromMapper(bookDto);
         BookEntity savedBook = bookService.save(book);
         BookDto result = mapper.toMapper(savedBook);
@@ -69,7 +70,7 @@ public class BookController {
     }
 
     @PutMapping("/books/{isbn}")
-    public ResponseEntity<BookDto> update(@PathVariable String isbn, @RequestBody BookDto bookDto) {
+    public ResponseEntity<BookDto> update(@PathVariable String isbn, @Valid @RequestBody BookDto bookDto) {
         BookEntity book = mapper.fromMapper(bookDto);
 
         if (!bookService.isExists(isbn)) {
