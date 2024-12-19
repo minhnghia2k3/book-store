@@ -1,6 +1,7 @@
 package com.minhnghia2k3.book.store.exceptions;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -8,13 +9,14 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler({AuthorNotFound.class, BookNotFound.class})
+    @ExceptionHandler({AuthorNotFound.class, BookNotFound.class, UsernameNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(Exception e) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
@@ -55,6 +57,11 @@ public class GlobalExceptionHandler {
             case ExpiredJwtException expiredJwtException -> {
                 errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
                 errorDetail.setProperty("description", "The JWT token has expired");
+                return errorDetail;
+            }
+            case MalformedJwtException _ -> {
+                errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), exception.getMessage());
+                errorDetail.setProperty("description", "The JWT is malformed");
                 return errorDetail;
             }
             default -> {

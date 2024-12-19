@@ -7,6 +7,6 @@ import java.util.List;
 public interface UserService {
     boolean existByUsername(String username);
     boolean existByEmail(String email);
-    void save(UserEntity userEntity);
+    UserEntity save(UserEntity userEntity);
     List<UserEntity> allUsers();
 }

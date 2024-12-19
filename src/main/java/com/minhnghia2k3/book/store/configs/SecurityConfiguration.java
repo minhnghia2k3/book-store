@@ -1,5 +1,6 @@
 package com.minhnghia2k3.book.store.configs;
 
+import com.minhnghia2k3.book.store.filters.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

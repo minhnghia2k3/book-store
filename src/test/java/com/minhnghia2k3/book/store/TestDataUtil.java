@@ -1,5 +1,7 @@
 package com.minhnghia2k3.book.store;
 
+import com.minhnghia2k3.book.store.domain.dtos.LoginUserDto;
+import com.minhnghia2k3.book.store.domain.dtos.RegisterUserDto;
 import com.minhnghia2k3.book.store.domain.entities.AuthorEntity;
 import com.minhnghia2k3.book.store.domain.entities.BookEntity;
 import com.minhnghia2k3.book.store.domain.entities.UserEntity;
@@ -20,6 +22,17 @@ public class TestDataUtil {
     }
 
     public static UserEntity createTestUser() {
-        return new UserEntityBuilder().setUsername("unique_username").setEmail("unique@username.com").setPassword("pw@123").createUserEntity();
+        return new UserEntityBuilder()
+                .setEmail("unique@username.com")
+                .setPassword("pw@123").createUserEntity();
+    }
+
+    public static RegisterUserDto createTestRegisterDto() {
+        return new RegisterUserDto("unique@username.com", "pw@123");
+    }
+
+    public static LoginUserDto createTestLoginDto(RegisterUserDto user) {
+        return new LoginUserDto(user.getEmail(), user.getPassword());
+
     }
 }

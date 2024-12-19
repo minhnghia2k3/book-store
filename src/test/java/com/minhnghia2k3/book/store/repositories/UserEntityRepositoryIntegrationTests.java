@@ -47,21 +47,5 @@ public class UserEntityRepositoryIntegrationTests {
 
         assertThat(isExists).isFalse();
     }
-
-    @Test
-    void should_return_true_when_finding_existing_user_by_username() {
-        UserEntity user = TestDataUtil.createTestUser();
-        underTest.save(user);
-        boolean isExists = underTest.existsByUsername(user.getUsername());
-
-        assertThat(isExists).isTrue();
-    }
-
-    @Test
-    void should_return_false_when_finding_non_existing_user_by_username(){
-        boolean isExists = underTest.existsByUsername("non-existing-user");
-
-        assertThat(isExists).isFalse();
-    }
 }
 

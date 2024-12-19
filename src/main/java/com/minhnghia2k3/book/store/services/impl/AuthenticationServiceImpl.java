@@ -27,12 +27,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public UserEntity signup(RegisterUserDto input) {
-        if (userRepository.existsByEmail(input.getEmail()) || userRepository.existsByUsername(input.getUsername())) {
+        if (userRepository.existsByEmail(input.getEmail())) {
             throw new UserExistsException("User already exists!");
         }
 
         UserEntity user = new UserEntityBuilder()
-                .setUsername(input.getUsername())
                 .setEmail((input.getEmail()))
                 .setPassword(passwordEncoder.encode(input.getPassword()))
                 .createUserEntity();

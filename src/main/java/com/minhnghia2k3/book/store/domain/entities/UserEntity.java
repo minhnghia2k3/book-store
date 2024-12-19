@@ -1,5 +1,6 @@
 package com.minhnghia2k3.book.store.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,9 +16,6 @@ public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-
-    @Column(unique = true, nullable = false)
-    private String username;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -36,7 +34,7 @@ public class UserEntity implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @ManyToMany(fetch=FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -47,15 +45,14 @@ public class UserEntity implements UserDetails {
     public UserEntity() {
     }
 
-    public UserEntity(String username, String email, String password) {
-        this.username = username;
+    public UserEntity(String email, String password) {
         this.email = email;
         this.password = password;
         this.isActivated = false;
     }
 
-    public UserEntity(Long id, String username, String email, String password, boolean isActivated, Set<RoleEntity> roles) {
-        this(username, email, password);
+    public UserEntity(Long id, String email, String password, boolean isActivated, Set<RoleEntity> roles) {
+        this(email, password);
         this.id = id;
         this.isActivated = isActivated;
         this.roles = roles;
@@ -93,10 +90,6 @@ public class UserEntity implements UserDetails {
         return true;
     }
 
-    public void setUsername(@NotNull String username) {
-        this.username = username;
-    }
-
     public @NotNull String getEmail() {
         return email;
     }
@@ -132,5 +125,21 @@ public class UserEntity implements UserDetails {
 
     public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

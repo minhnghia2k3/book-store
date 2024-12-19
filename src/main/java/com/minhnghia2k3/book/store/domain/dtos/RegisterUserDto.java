@@ -1,25 +1,15 @@
 package com.minhnghia2k3.book.store.domain.dtos;
 
 public class RegisterUserDto {
-    private String username;
     private String email;
     private String password;
 
     public RegisterUserDto() {
     }
 
-    public RegisterUserDto(String username, String email, String password) {
-        this.username = username;
+    public RegisterUserDto(String email, String password) {
         this.email = email;
         this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {

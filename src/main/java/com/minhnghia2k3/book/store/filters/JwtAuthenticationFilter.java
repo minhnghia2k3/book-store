@@ -1,4 +1,4 @@
-package com.minhnghia2k3.book.store.configs;
+package com.minhnghia2k3.book.store.filters;
 
 import com.minhnghia2k3.book.store.services.JwtService;
 import jakarta.servlet.FilterChain;
@@ -21,7 +21,6 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver handlerExceptionResolver;
-
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 

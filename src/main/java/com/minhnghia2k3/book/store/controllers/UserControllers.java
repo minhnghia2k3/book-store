@@ -1,6 +1,8 @@
 package com.minhnghia2k3.book.store.controllers;
 
+import com.minhnghia2k3.book.store.domain.dtos.response.UserResponse;
 import com.minhnghia2k3.book.store.domain.entities.UserEntity;
+import com.minhnghia2k3.book.store.mappers.Mapper;
 import com.minhnghia2k3.book.store.services.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.http.ResponseEntity;
@@ -17,18 +19,20 @@ import java.util.List;
 public class UserControllers {
 
     private final UserService userService;
+    private final Mapper<UserEntity, UserResponse> mapper;
 
-    public UserControllers(UserService userService) {
+    public UserControllers(UserService userService, Mapper<UserEntity, UserResponse> mapper) {
         this.userService = userService;
+        this.mapper = mapper;
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserEntity> authenticatedUser() {
+    public ResponseEntity<UserResponse> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         UserEntity currentUser = (UserEntity) authentication.getPrincipal();
-
-        return ResponseEntity.ok(currentUser);
+        UserResponse response = mapper.toMapper(currentUser);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
