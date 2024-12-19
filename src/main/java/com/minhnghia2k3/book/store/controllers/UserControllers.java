@@ -36,8 +36,9 @@ public class UserControllers {
     }
 
     @GetMapping
-//    TODO: @RolesAllowed("ROLE_SUPER_ADMIN")
-    public ResponseEntity<List<UserEntity>> getAllUsers() {
-        return ResponseEntity.ok(userService.allUsers());
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<UserEntity> users = userService.allUsers();
+        List<UserResponse> response = users.stream().map(mapper::toMapper).toList();
+        return ResponseEntity.ok(response);
     }
 }

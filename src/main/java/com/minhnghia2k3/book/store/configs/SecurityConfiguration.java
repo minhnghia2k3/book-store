@@ -1,5 +1,6 @@
 package com.minhnghia2k3.book.store.configs;
 
+import com.minhnghia2k3.book.store.domain.entities.enums.ERole;
 import com.minhnghia2k3.book.store.filters.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -35,11 +36,20 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(request -> {
+            // ROLE BASED ACCESS CONTROL
+            request.requestMatchers("/api/v*/users/me").authenticated();
+            request.requestMatchers("/api/v*/users").hasAnyRole(ERole.ADMIN.toString(), ERole.SUPER_ADMIN.name());
+            request.requestMatchers("/api/v*/admins").hasRole(ERole.SUPER_ADMIN.name());
+
+            // Permit auth routes
             request.requestMatchers(
                     "/api/v*/auth/**"
             ).permitAll();
+
+            // Handle all requests
             request.anyRequest().authenticated();
         });
+
 
         http.sessionManagement(session -> {
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -1,11 +1,11 @@
 package com.minhnghia2k3.book.store.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
@@ -34,13 +34,12 @@ public class UserEntity implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(
+            name = "role_id",
+            nullable = false
     )
-    private Set<RoleEntity> roles = new HashSet<>();
+    private RoleEntity role;
 
     public UserEntity() {
     }
@@ -48,14 +47,12 @@ public class UserEntity implements UserDetails {
     public UserEntity(String email, String password) {
         this.email = email;
         this.password = password;
-        this.isActivated = false;
     }
 
-    public UserEntity(Long id, String email, String password, boolean isActivated, Set<RoleEntity> roles) {
+    public UserEntity(String email, String password, RoleEntity role) {
         this(email, password);
-        this.id = id;
-        this.isActivated = isActivated;
-        this.roles = roles;
+        this.role = role;
+        this.isActivated = false;
     }
 
     public Long getId() {
@@ -100,7 +97,8 @@ public class UserEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.getName());
+        return List.of(authority);
     }
 
     public String getPassword() {
@@ -119,12 +117,12 @@ public class UserEntity implements UserDetails {
         isActivated = activated;
     }
 
-    public Set<RoleEntity> getRoles() {
-        return roles;
+    public RoleEntity getRole() {
+        return role;
     }
 
-    public void setRoles(Set<RoleEntity> roles) {
-        this.roles = roles;
+    public void setRole(RoleEntity role) {
+        this.role = role;
     }
 
     public Date getCreatedAt() {

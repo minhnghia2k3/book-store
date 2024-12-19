@@ -3,29 +3,22 @@ package com.minhnghia2k3.book.store.domain.entities;
 import com.minhnghia2k3.book.store.domain.entities.enums.ERole;
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-
 @Entity
-@Table(name="roles")
+@Table(name = "roles")
 public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column(length=20)
+    @Column(length = 20, nullable = false)
     private ERole name;
-
-    @ManyToMany(mappedBy = "roles")
-    private HashSet<UserEntity> users;
 
     public RoleEntity() {
     }
 
-    public RoleEntity(Integer id, ERole name, HashSet<UserEntity> users) {
-        this.id = id;
+    public RoleEntity(ERole name) {
         this.name = name;
-        this.users = users;
     }
 
     public Integer getId() {
@@ -42,13 +35,5 @@ public class RoleEntity {
 
     public void setName(ERole name) {
         this.name = name;
-    }
-
-    public HashSet<UserEntity> getUsers() {
-        return users;
-    }
-
-    public void setUsers(HashSet<UserEntity> users) {
-        this.users = users;
     }
 }
