@@ -1,12 +1,18 @@
 package com.minhnghia2k3.book.store.domain.dtos;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+
 public class BookDto {
     private String isbn;
 
+    @NotEmpty
+    @Length(min=5, max=255)
     private String title;
 
+    @NotNull
     private AuthorDto author;
-
 
     public BookDto() {
     }

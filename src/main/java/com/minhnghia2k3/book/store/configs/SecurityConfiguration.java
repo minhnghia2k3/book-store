@@ -43,7 +43,8 @@ public class SecurityConfiguration {
 
             // Permit auth routes
             request.requestMatchers(
-                    "/api/v*/auth/**"
+                    "/api/v*/auth/**",
+                    "/api/v*/s3/**"
             ).permitAll();
 
             // Handle all requests

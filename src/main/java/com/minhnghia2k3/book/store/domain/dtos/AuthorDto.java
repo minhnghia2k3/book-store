@@ -1,10 +1,20 @@
 package com.minhnghia2k3.book.store.domain.dtos;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Length;
+
 public class AuthorDto {
     private Long id;
 
+    @NotEmpty
+    @Length(min=5,max=100)
     private String name;
 
+    @NotEmpty
+    @Min(1)
+    @Max(100)
     private Integer age;
 
     public AuthorDto(Long id, String name, Integer age) {

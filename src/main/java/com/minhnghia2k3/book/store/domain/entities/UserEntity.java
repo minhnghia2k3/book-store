@@ -45,7 +45,7 @@ public class UserEntity implements UserDetails {
     }
 
     public UserEntity(String email, String password) {
-        this.email = email;
+        this.email = email.toLowerCase();
         this.password = password;
     }
 
@@ -92,7 +92,7 @@ public class UserEntity implements UserDetails {
     }
 
     public void setEmail(@NotNull String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     @Override

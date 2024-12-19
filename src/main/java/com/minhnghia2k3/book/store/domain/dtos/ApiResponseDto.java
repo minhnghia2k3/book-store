@@ -1,6 +1,6 @@
 package com.minhnghia2k3.book.store.domain.dtos;
 
-public class ApiResponseDto<T>{
+public class ApiResponseDto<T> {
     private Integer status;
     private String message;
     private T response;
@@ -25,8 +25,8 @@ public class ApiResponseDto<T>{
         return this;
     }
 
-    public ApiResponseDto<T> setResponse(T response){
-        this.response= response;
+    public ApiResponseDto<T> setResponse(T response) {
+        this.response = response;
         return this;
     }
 

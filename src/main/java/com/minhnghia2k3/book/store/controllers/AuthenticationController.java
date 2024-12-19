@@ -8,6 +8,7 @@ import com.minhnghia2k3.book.store.domain.entities.UserEntity;
 import com.minhnghia2k3.book.store.mappers.Mapper;
 import com.minhnghia2k3.book.store.services.AuthenticationService;
 import com.minhnghia2k3.book.store.services.JwtService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +30,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<UserResponse> register(@RequestBody RegisterUserDto dto) {
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterUserDto dto) {
         UserEntity user = authService.signup(dto);
         UserResponse response = mapper.toMapper(user);
         URI uri = URI.create("/api/v1/users/" + user.getId());
@@ -38,7 +39,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto dto) {
+    public ResponseEntity<LoginResponse> authenticate(@Valid @RequestBody LoginUserDto dto) {
         UserEntity authenticatedUser = authService.authenticate(dto);
 
         String jwt = jwtService.generateToken(authenticatedUser);
